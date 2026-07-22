@@ -8,7 +8,7 @@ export default async function RegistryPage() {
   return (
     <main>
       <nav className="session-nav" aria-label="Account navigation">
-        <Link href="/">Home</Link><Link href="/review">Review queue</Link>
+        <Link href="/">Home</Link><Link href="/map">Map</Link><Link href="/review">Review queue</Link>
         <span>{user.email} · {role}</span><form action={signOut}><button type="submit">Sign out</button></form>
       </nav>
       <p className="eyebrow">Milestone 2.5 · restricted</p>

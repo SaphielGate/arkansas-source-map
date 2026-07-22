@@ -65,3 +65,40 @@ button.danger { border-color: #69271d; background: transparent; color: #69271d; 
 .home-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; font: 700 1rem/1.4 system-ui, sans-serif; }
 .actions a, .home-actions a { display: inline-flex; align-items: center; padding: 0.7rem 1rem; border: 1px solid #8b3a2b; color: #69271d; }
 @media (max-width: 650px) { .form-grid { grid-template-columns: 1fr; } label.wide { grid-column: auto; } }
+
+.map-page { width: min(1380px, calc(100% - 2rem)); padding-top: 4rem; }
+.map-workspace { display: grid; gap: 1rem; font-family: system-ui, sans-serif; }
+.map-controls, .record-detail, .map-legend { padding: 1rem; border: 1px solid #d2c9b9; background: #fffaf0; }
+.filter-grid { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 0.75rem; }
+.map-toggles { display: flex; flex-wrap: wrap; align-items: end; gap: 1rem; margin-top: 1rem; }
+.map-toggles fieldset { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0; padding: 0.6rem 0.8rem; border: 1px solid #a8a397; }
+.map-toggles fieldset label, .review-layer-toggle { display: flex; grid-template-columns: auto 1fr; align-items: center; gap: 0.4rem; font-weight: 500; }
+.map-toggles input { width: auto; }
+.map-toggles button { margin: 0; }
+.map-count { margin-bottom: 0; color: #4b554c; }
+.map-and-detail { display: grid; grid-template-columns: minmax(0, 2fr) minmax(290px, 1fr); gap: 1rem; }
+.leaflet-map { min-height: 640px; border: 1px solid #a8a397; background: #dfe8dc; }
+.map-state { min-height: 300px; display: grid; place-items: center; padding: 2rem; border: 1px solid #d2c9b9; background: #fffaf0; color: #4b554c; font: 600 1rem/1.5 system-ui, sans-serif; text-align: center; }
+.map-state--error { border-left: 5px solid #8b3a2b; color: #69271d; }
+.map-marker-wrap { background: transparent; border: 0; }
+.map-marker { display: block; width: 22px; height: 22px; border: 3px solid white; border-radius: 50% 50% 50% 0; background: var(--marker-color); box-shadow: 0 1px 5px #17201899; transform: rotate(-45deg); }
+.map-marker--uncertain { outline: 3px dashed #172018; outline-offset: 2px; }
+.map-cluster { display: grid; place-items: center; border: 4px solid #ffffffcc; border-radius: 50%; background: #283e77; color: white; box-shadow: 0 1px 5px #17201899; font: 750 0.9rem/1 system-ui, sans-serif; }
+.record-detail { min-height: 300px; overflow-wrap: anywhere; }
+.record-detail h2 { margin: 0.25rem 0 1rem; }
+.record-detail dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; }
+.record-detail dl div { padding-top: 0.6rem; border-top: 1px solid #ddd4c5; }
+.record-detail dt { color: #596257; font-size: 0.78rem; font-weight: 750; text-transform: uppercase; }
+.record-detail dd { margin: 0.2rem 0 0; }
+.record-detail .wide { grid-column: 1 / -1; }
+.review-only-badge, .coordinate-warning { padding: 0.65rem 0.8rem; background: #eee3f6; color: #57306f; font-weight: 650; }
+.coordinate-warning { border-left: 4px dashed #172018; background: #fff3cf; color: #5b4711; }
+.map-legend ul { display: flex; flex-wrap: wrap; gap: 0.8rem 1.2rem; margin: 0; padding: 0; list-style: none; }
+.map-legend li { display: flex; align-items: center; gap: 0.45rem; }
+.legend-dot { width: 18px; height: 18px; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 0 1px #777; }
+.legend-dot--review { background: #7d3cb5; }
+.legend-dot--uncertain { background: #eee; outline: 2px dashed #172018; }
+.legend-cluster { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #283e77; color: white; font-weight: 750; }
+.legend-heat { width: 70px; height: 14px; background: linear-gradient(90deg, #2c7bb6, #55c667, #fde725, #d7191c); }
+@media (max-width: 950px) { .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .map-and-detail { grid-template-columns: 1fr; } .leaflet-map { min-height: 520px; } }
+@media (max-width: 550px) { .filter-grid, .record-detail dl { grid-template-columns: 1fr; } .record-detail .wide { grid-column: auto; } .leaflet-map { min-height: 430px; } }

@@ -15,6 +15,7 @@ export default function Home() {
       <p className="status">Sign in with an administrator-provisioned account. Available tools depend on the account’s application role.</p>
       <div className="home-actions">
         <Link href="/sign-in">Sign in</Link>
+        <Link href="/map">Interactive map</Link>
         <Link href="/registry">Registry entry</Link>
         <Link href="/review">Review queue</Link>
       </div>

@@ -28,8 +28,8 @@ export type Database = {
         Relationships: [];
       };
       source_observations: {
-        Row: { address: string; analyst_notes: string | null; business_name_as_listed: string; city: string; county: string; human_review_status: string; id: string; latitude: number; listing_status: string; location_record_id: string; longitude: number; normalized_address: string; review_count: number; review_note: string | null; reviewed_at: string | null; reviewed_by: string | null; source_collection_date: string; source_url: string; submitted_at: string; submitted_by: string; zip_code: string };
-        Insert: { address: string; analyst_notes?: string | null; business_name_as_listed: string; city: string; county: string; latitude: number; listing_status: string; location_record_id: string; longitude: number; review_count: number; source_collection_date: string; source_url: string; submitted_by: string; zip_code: string };
+        Row: { address: string; analyst_notes: string | null; business_name_as_listed: string; city: string; coordinate_confidence: string; county: string; human_review_status: string; id: string; latitude: number; listing_status: string; location_record_id: string; longitude: number; normalized_address: string; review_count: number; review_note: string | null; reviewed_at: string | null; reviewed_by: string | null; source_collection_date: string; source_url: string; submitted_at: string; submitted_by: string; zip_code: string };
+        Insert: { address: string; analyst_notes?: string | null; business_name_as_listed: string; city: string; coordinate_confidence?: string; county: string; latitude: number; listing_status: string; location_record_id: string; longitude: number; review_count: number; source_collection_date: string; source_url: string; submitted_by: string; zip_code: string };
         Update: { human_review_status?: string; review_note?: string | null; reviewed_at?: string | null; reviewed_by?: string | null };
         Relationships: [{ foreignKeyName: "source_observations_location_record_id_fkey"; columns: ["location_record_id"]; isOneToOne: false; referencedRelation: "location_records"; referencedColumns: ["id"] }];
       };
@@ -48,6 +48,10 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      get_map_records: {
+        Args: { p_include_pending?: boolean };
+        Returns: { address: string; analyst_notes: string | null; business_name_as_listed: string; city: string; collection_date: string; coordinate_confidence: string; county: string; first_seen: string; human_review_status: string; last_seen: string; latitude: number; location_record_id: string; longitude: number; observation_id: string; record_id: string; record_status: string; review_count: number; review_layer: boolean; source_url: string; zip_code: string }[];
+      };
       has_app_role: {
         Args: { p_roles: Database["public"]["Enums"]["app_role"][] };
         Returns: boolean;

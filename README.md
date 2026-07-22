@@ -1,6 +1,6 @@
 # Arkansas Source Map
 
-Milestone 2.5 adds sign-in, session handling, protected registry and review routes, and database-enforced application roles to the manual Arkansas location registry. It does **not** include public registration, scraping, scheduling, mapping, or PDF reports.
+Milestone 3 adds an authenticated Arkansas-centered map to the manual registry and role-based review foundation. It does **not** include public registration, scraping, scheduled scanning, PDF reporting, KML or GeoJSON export, or public sharing.
 
 > Inclusion in this index does not verify, endorse, or establish the truth of a claim. Source records and evidence require independent review, context, and corroboration.
 
@@ -53,6 +53,14 @@ Accounts must be created by a trusted operator through Supabase Authentication a
 | `reviewer` | Yes | Yes | Yes | No |
 | `admin` | Yes | Yes | Yes | Yes |
 
+## Interactive map
+
+The protected `/map` route uses client-side Leaflet with OpenStreetMap tiles. Approved and verified records are the only records visible by default. Marker clusters summarize nearby points, while the optional heat layer represents relative concentration weighted by the recorded review count. Filters cover county, city, ZIP code, current listing status, human review status, first-seen date, and last-seen date.
+
+Reviewers and admins receive an explicit, disabled-by-default control for a separate pending review layer. Viewers and analysts cannot request pending map data: the map RPC and table RLS policies enforce that boundary independently of the interface. Coordinates marked `low` or `unknown` receive a visual warning and should be interpreted using the listed address as the primary reference.
+
+> This map documents businesses appearing in selected public-source datasets. Inclusion, review activity, proximity, or clustering does not establish criminal conduct.
+
 ### Bootstrap the first admin
 
 1. Disable public sign-ups in Supabase Authentication settings.
@@ -88,4 +96,4 @@ The SQL migrations retain the Milestone 1 `sources`, `evidence_items`, and `sour
 
 Manual entry requires an authenticated `analyst`, `reviewer`, or `admin`. Review decisions require an authenticated `reviewer` or `admin`. These requirements are enforced inside security-definer database wrappers as well as in protected server-rendered routes. Approval means a human review occurred; it does not independently verify the accuracy, completeness, or currency of a source. Only an approved registry record can carry the database-level `verified` state.
 
-The committed TypeScript database types mirror the Milestone 2.5 schema. Regenerate them after later schema changes with the Supabase CLI and review the resulting diff before committing.
+The committed TypeScript database types mirror the Milestone 3 schema. Regenerate them after later schema changes with the Supabase CLI and review the resulting diff before committing.
