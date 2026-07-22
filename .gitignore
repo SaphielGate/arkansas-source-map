@@ -151,5 +151,10 @@ coverage/
 npm-debug.log*
 *.tsbuildinfo
 
+<<<<<<< HEAD
 *.swp
 *.swo
+=======
+# Supabase CLI local metadata
+supabase/.temp/
+>>>>>>> be8a00a (chore: ignore Supabase CLI temp metadata)
