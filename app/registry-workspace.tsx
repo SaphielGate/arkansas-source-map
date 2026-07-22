@@ -22,7 +22,7 @@ const fields = [
   ["review_count", "Review count", "number"],
 ] as const;
 
-export default function RegistryWorkspace() {
+export default function RegistryWorkspace({ mode }: { mode: "entry" | "review" }) {
   const [queue, setQueue] = useState<Observation[]>([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
@@ -39,7 +39,9 @@ export default function RegistryWorkspace() {
     setQueue((data as Observation[]) ?? []);
   }, []);
 
-  useEffect(() => void loadQueue(), [loadQueue]);
+  useEffect(() => {
+    if (mode === "review") void loadQueue();
+  }, [loadQueue, mode]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -81,7 +83,7 @@ export default function RegistryWorkspace() {
 
   return (
     <div className="workspace">
-      <section aria-labelledby="entry-heading">
+      {mode === "entry" && <section aria-labelledby="entry-heading">
         <h2 id="entry-heading">Add a source observation</h2>
         <p className="help">Enter details exactly as observed. Submitting a later observation preserves the earlier one.</p>
         <form onSubmit={submit}>
@@ -100,9 +102,9 @@ export default function RegistryWorkspace() {
           </div>
           <button type="submit">Submit for human review</button>
         </form>
-      </section>
+      </section>}
 
-      <section aria-labelledby="queue-heading">
+      {mode === "review" && <section aria-labelledby="queue-heading">
         <h2 id="queue-heading">Review queue</h2>
         <p className="help">Approval records a completed human review; it does not independently verify a listing or claim.</p>
         {loading ? <p>Loading…</p> : queue.length === 0 ? <p>No pending observations, or sign in to view the queue.</p> : (
@@ -122,7 +124,7 @@ export default function RegistryWorkspace() {
             </article>
           ))}</div>
         )}
-      </section>
+      </section>}
       <p className="feedback" role="status" aria-live="polite">{message}</p>
     </div>
   );

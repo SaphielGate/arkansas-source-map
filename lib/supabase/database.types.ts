@@ -39,9 +39,19 @@ export type Database = {
         Update: { description?: string | null; jurisdiction?: string | null; name?: string; source_type?: string; url?: string; updated_at?: string };
         Relationships: [];
       };
+      user_roles: {
+        Row: { created_at: string; granted_by: string | null; role: Database["public"]["Enums"]["app_role"]; updated_at: string; user_id: string };
+        Insert: { granted_by?: string | null; role: Database["public"]["Enums"]["app_role"]; user_id: string };
+        Update: { granted_by?: string | null; role?: Database["public"]["Enums"]["app_role"] };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
+      has_app_role: {
+        Args: { p_roles: Database["public"]["Enums"]["app_role"][] };
+        Returns: boolean;
+      };
       review_location_observation: {
         Args: { p_action: string; p_note?: string | null; p_observation_id: string };
         Returns: undefined;
@@ -51,7 +61,7 @@ export type Database = {
         Returns: { duplicate_match: string; observation_id: string; record_id: string }[];
       };
     };
-    Enums: Record<string, never>;
+    Enums: { app_role: "viewer" | "analyst" | "reviewer" | "admin" };
     CompositeTypes: Record<string, never>;
   };
 };
