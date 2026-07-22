@@ -141,3 +141,15 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+node_modules/
+.next/
+coverage/
+.env
+.env.local
+.env.*.local
+!.env.example
+npm-debug.log*
+*.tsbuildinfo
+
+*.swp
+*.swo
