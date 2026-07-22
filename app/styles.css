@@ -10,7 +10,7 @@
 body { margin: 0; }
 
 main {
-  width: min(760px, calc(100% - 2rem));
+  width: min(1100px, calc(100% - 2rem));
   margin: 0 auto;
   padding: 12vh 0 4rem;
 }
@@ -36,3 +36,23 @@ aside {
 }
 
 .status { color: #4b554c; font: 0.95rem/1.5 system-ui, sans-serif; }
+
+.workspace { display: grid; gap: 2rem; margin-top: 3rem; font-family: system-ui, sans-serif; }
+.workspace section { padding: 1.5rem; border: 1px solid #d2c9b9; background: #fffaf0; }
+h2 { margin-top: 0; font-family: Georgia, "Times New Roman", serif; }
+.help { color: #4b554c; line-height: 1.5; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+label { display: grid; gap: 0.4rem; font-weight: 650; }
+label.wide { grid-column: 1 / -1; }
+input, select, textarea { width: 100%; padding: 0.7rem; border: 1px solid #8d918b; border-radius: 2px; background: white; font: inherit; }
+button { margin-top: 1rem; padding: 0.7rem 1rem; border: 1px solid #653022; background: #8b3a2b; color: white; font: 700 0.9rem/1 system-ui, sans-serif; cursor: pointer; }
+button.secondary { border-color: #596257; background: #667063; }
+button.danger { border-color: #69271d; background: transparent; color: #69271d; }
+.queue { display: grid; gap: 1rem; }
+.queue article { padding: 1rem; border: 1px solid #ddd4c5; background: white; }
+.queue h3 { margin: 0.25rem 0; }
+.record-id { margin: 0; color: #8b3a2b; font-size: 0.8rem; font-weight: 750; letter-spacing: 0.08em; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.feedback { position: sticky; bottom: 1rem; padding: 0.8rem 1rem; background: #172018; color: white; }
+.feedback:empty { display: none; }
+@media (max-width: 650px) { .form-grid { grid-template-columns: 1fr; } label.wide { grid-column: auto; } }

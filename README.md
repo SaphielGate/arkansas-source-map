@@ -1,6 +1,6 @@
 # Arkansas Source Map
 
-Milestone 1 establishes a Next.js and Supabase foundation for organizing public-interest source records and supporting evidence in Arkansas. It does **not** include scraping, scheduled scanning, or automated source collection.
+Milestone 2 adds an authenticated, manual Arkansas location registry and editorial review queue to the Milestone 1 foundation. It does **not** include scraping, scheduled scanning, automated source collection, heat maps, or PDF export.
 
 > Inclusion in this index does not verify, endorse, or establish the truth of a claim. Source records and evidence require independent review, context, and corroboration.
 
@@ -51,6 +51,8 @@ npm test
 npm run build
 ```
 
-The SQL migrations create the `sources`, `evidence_items`, and `source_evidence` tables; enable Row Level Security; add initial authenticated-user policy skeletons; and create a private `evidence` storage bucket. Evidence paths use the convention `<auth-user-id>/<generated-filename>`.
+The SQL migrations retain the Milestone 1 `sources`, `evidence_items`, and `source_evidence` tables and private `evidence` bucket. Milestone 2 adds `location_records`, append-only `source_observations`, and append-only `review_actions`. Permanent IDs use `AR-RM-000001`; matching source URLs or normalized addresses add observations to the existing record rather than replacing history.
 
-The committed TypeScript database types mirror Milestone 1. Regenerate them after schema changes with the Supabase CLI and review the resulting diff before committing.
+Manual entry and review require an authenticated Supabase user. Reviewers can approve, reject, or request correction. Approval means a human review occurred; it does not independently verify the accuracy, completeness, or currency of a source. Only an approved registry record can carry the database-level `verified` state.
+
+The committed TypeScript database types mirror the Milestone 2 schema. Regenerate them after later schema changes with the Supabase CLI and review the resulting diff before committing.
