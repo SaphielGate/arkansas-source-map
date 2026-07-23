@@ -12,6 +12,13 @@ test("the environment example contains only the required public Supabase setting
   assert.doesNotMatch(example, /^NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY=/m);
 });
 
+test("the browser environment loader uses statically analyzable public variables", () => {
+  const loader = readProjectFile("lib", "supabase", "env.ts");
+  assert.match(loader, /process\.env\.NEXT_PUBLIC_SUPABASE_URL/);
+  assert.match(loader, /process\.env\.NEXT_PUBLIC_SUPABASE_ANON_KEY/);
+  assert.doesNotMatch(loader, /process\.env\[[^\]]+\]/);
+});
+
 test("RLS is enabled for every core table", () => {
   const sql = readProjectFile("supabase", "migrations", "202607210002_rls_policies.sql");
   for (const table of ["sources", "evidence_items", "source_evidence"]) {

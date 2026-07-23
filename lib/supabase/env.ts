@@ -1,10 +1,13 @@
-const requiredPublicVariables = [
-  "NEXT_PUBLIC_SUPABASE_URL",
-  "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-] as const;
+type PublicSupabaseEnvironment = Pick<
+  NodeJS.ProcessEnv,
+  "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+>;
 
-export function getSupabaseEnv(environment: NodeJS.ProcessEnv = process.env) {
-  const missing = requiredPublicVariables.filter((name) => !environment[name]);
+export function validateSupabaseEnv(environment: PublicSupabaseEnvironment) {
+  const missing = [
+    !environment.NEXT_PUBLIC_SUPABASE_URL && "NEXT_PUBLIC_SUPABASE_URL",
+    !environment.NEXT_PUBLIC_SUPABASE_ANON_KEY && "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+  ].filter((name): name is string => Boolean(name));
 
   if (missing.length > 0) {
     throw new Error(`Missing required Supabase environment variables: ${missing.join(", ")}`);
@@ -14,4 +17,13 @@ export function getSupabaseEnv(environment: NodeJS.ProcessEnv = process.env) {
     url: environment.NEXT_PUBLIC_SUPABASE_URL as string,
     anonKey: environment.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
   };
+}
+
+export function getSupabaseEnv() {
+  // NEXT_PUBLIC variables must be referenced statically so Next.js can inline
+  // them into browser bundles. Computed environment lookups only work server-side.
+  return validateSupabaseEnv({
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  });
 }
