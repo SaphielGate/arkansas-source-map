@@ -6,7 +6,7 @@ Milestone 3 adds an authenticated Arkansas-centered map to the manual registry a
 
 ## Requirements
 
-- Node.js 18.18 or newer
+- Node.js 20 or newer
 - npm
 - Supabase CLI (for the local database workflow)
 - Docker-compatible container runtime (required by the Supabase CLI)
