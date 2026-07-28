@@ -5,6 +5,11 @@ import test from "node:test";
 
 const read = (...parts) => readFileSync(resolve(process.cwd(), ...parts), "utf8");
 const roles = read("supabase", "migrations", "202607220002_authentication_roles.sql");
+const consolidatedRoleSelectPolicy = read(
+  "supabase",
+  "migrations",
+  "20260728124829_consolidate_user_role_select_policy.sql",
+);
 
 test("application roles and least-privilege RPC checks are database enforced", () => {
   assert.match(roles, /create type public\.app_role as enum \('viewer', 'analyst', 'reviewer', 'admin'\)/);
@@ -19,6 +24,26 @@ test("role records use RLS and cannot be self-assigned by non-admins", () => {
   assert.match(roles, /Admins can add application roles/);
   assert.match(roles, /granted_by = \(select auth\.uid\(\)\)/);
   assert.doesNotMatch(roles, /Users can add their own application role/);
+});
+
+test("role records use one permissive select policy for users and admins", () => {
+  assert.match(
+    consolidatedRoleSelectPolicy,
+    /drop policy if exists "Users can read their own application role" on public\.user_roles/,
+  );
+  assert.match(
+    consolidatedRoleSelectPolicy,
+    /drop policy if exists "Admins can read application roles" on public\.user_roles/,
+  );
+  assert.match(
+    consolidatedRoleSelectPolicy,
+    /create policy "Users can read accessible application roles"\s+on public\.user_roles for select to authenticated/,
+  );
+  assert.match(consolidatedRoleSelectPolicy, /user_id = \(select auth\.uid\(\)\)/);
+  assert.match(
+    consolidatedRoleSelectPolicy,
+    /public\.has_app_role\(array\['admin'\]::public\.app_role\[\]\)/,
+  );
 });
 
 test("registry and review pages enforce their respective roles", () => {
