@@ -18,6 +18,7 @@ export default function Home() {
         <Link href="/map">Interactive map</Link>
         <Link href="/registry">Registry entry</Link>
         <Link href="/review">Review queue</Link>
+        <Link href="/admin/import">CSV import</Link>
       </div>
     </main>
   );

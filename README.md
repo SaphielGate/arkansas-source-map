@@ -25,22 +25,158 @@ npm install
 cp .env.example .env.local
 ```
 
-3. Start Supabase and apply the migrations:
+For a hosted Supabase project, set these required values in `.env.local`:
 
-```bash
-supabase start
-supabase db reset
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 ```
 
-4. Copy the local API URL and anon key printed by `supabase status` into `.env.local`. Never place a service-role key in a `NEXT_PUBLIC_` variable.
+Find both values in Supabase Dashboard under Project Settings → API. The
+publishable key is intentionally available to the browser; authorization still
+depends on Supabase Authentication, application-role checks, and RLS.
 
-5. Start Next.js:
+Do not commit `.env.local`. It is ignored by Git. Each developer must create
+their own copy, and deployment platforms such as Vercel must receive the same
+variables through their environment-variable settings.
+
+The non-`NEXT_PUBLIC_` values in `.env.example` are reserved for future
+server-only API handlers. The current Next.js application uses the typed browser
+and SSR clients in `lib/supabase/` and does not require `SUPABASE_SECRET_KEY`.
+Never place a secret or service-role key in a `NEXT_PUBLIC_` variable.
+
+3. To use the local Supabase stack instead of a hosted project, start Supabase
+   and apply the migrations:
+
+```bash
+npx supabase start --ignore-health-check
+npx supabase migration up
+```
+
+Then copy the local API URL and publishable key printed by `npx supabase status`
+into `.env.local`:
+
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<local publishable key>
+```
+
+The app uses the local API URL, not the direct database URL, Studio URL, storage
+S3 URL, or development tools URL. If `npx supabase db reset` is needed for a
+clean local database, it may report a container health-check timeout while
+services are still starting. Wait briefly, run `npx supabase start
+--ignore-health-check`, and verify migration state with `npx supabase migration
+list --local`. Local reset replaces local database contents; do not run it
+against production.
+
+4. Start Next.js:
 
 ```bash
 npm run dev
 ```
 
 Open <http://localhost:3000>.
+
+## CSV Import Engine
+
+Authenticated administrators can open `/admin/import` to upload bounded CSV
+files into the existing `source_observations` human-review queue:
+
+`CSV → validation → normalization → duplicate classification → preview → admin confirmation → pending source_observations → human review → approved location_records → map`
+
+CSV import never writes directly to `location_records`. Imported observations
+have a system-controlled `pending` status and no location link. The existing
+review RPC creates and verifies a location only when a reviewer or administrator
+approves the observation.
+
+### CSV columns
+
+Required:
+
+- `source_name`
+- `latitude`
+- `longitude`
+- `county`
+- `incident_type`
+- `observation_date`
+- `summary`
+
+Optional:
+
+- `city`
+- `source_url`
+- `confidence`
+- `external_id`
+- `address`
+- `notes`
+
+`review_status` and unknown headers are rejected. Download the version-controlled
+[CSV template](docs/fixtures/Milestone_04_CSV_Import_Template.csv) for a complete
+example:
+
+```csv
+source_name,latitude,longitude,county,incident_type,observation_date,summary,city,source_url,confidence,external_id,address,notes
+Example Public Source,34.7465,-92.2896,Pulaski,example_observation,2026-07-01,Replace this example with a concise factual observation,Little Rock,https://example.org/source,medium,EXAMPLE-001,100 Example Street,Optional neutral notes
+```
+
+### Validation and limits
+
+- `.csv` files only; empty and malformed files are rejected.
+- Default maximum file size: 2 MiB. Set `CSV_IMPORT_MAX_BYTES` server-side to
+  choose a different positive byte limit.
+- Maximum 1,000 data rows and insert chunks of 100.
+- Required values cannot be blank; headers must be unique.
+- Dates must be valid `YYYY-MM-DD` values.
+- URLs must use HTTP or HTTPS.
+- Confidence must be `high`, `medium`, `low`, or `unknown`.
+- Coordinates must be globally valid and fit the existing Arkansas database
+  bounds: latitude 33–37 and longitude -95–-89.
+- Text fields use the documented 200/500/2,048/5,000-character limits.
+- Spreadsheet-executable text is rejected.
+- Whitespace, city/county spacing, dates, and URLs receive only deterministic,
+  recorded normalization. Ambiguous values are never guessed.
+
+### Duplicates, auditing, and safety
+
+The engine hashes the normalized external ID when present; otherwise it hashes
+the normalized source URL/name, observation date, coordinates, and summary.
+Duplicates within a file and duplicates already stored in the database appear
+in the preview and audit totals but are not silently inserted or published.
+
+The whole-file SHA-256 prevents accidental repeat uploads. Repeated files are
+blocked and identify the existing batch. Every attempted row is retained in
+`csv_import_rows` with its original CSV row number, original and normalized
+payloads, transformations, validation errors, duplicate outcome, and optional
+observation link. `csv_import_batches` records the file, importing administrator,
+timestamps, status, and totals. These tables are audit logs, not a second review
+queue.
+
+The page and server actions both require a database-backed `admin` role. RLS and
+explicit grants repeat that authorization in PostgreSQL. No user-editable JWT
+metadata, service-role key, or secret key authorizes browser imports.
+
+### Testing and rollback
+
+Run the complete verification suite:
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
+
+Database verification must additionally apply new migrations to a local or
+approved development environment, rerun the Supabase Security and Performance
+Advisors, confirm RLS on both CSV audit tables, and exercise pending/approval
+visibility with admin and non-admin accounts.
+
+Do not edit or reverse an applied migration. If Milestone 4 must be disabled,
+remove access to `/admin/import` and use a new forward migration to revoke import
+grants/policies. Preserve existing batches, row audits, and observations unless
+a separately reviewed retention decision authorizes deletion. A schema rollback
+must account for imported observations and their audit foreign keys before
+making columns or tables unavailable.
 
 ## Accounts and application roles
 

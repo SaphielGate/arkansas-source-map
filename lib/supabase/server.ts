@@ -5,9 +5,9 @@ import { getSupabaseEnv } from "./env";
 
 export function createClient() {
   const cookieStore = cookies();
-  const { url, anonKey } = getSupabaseEnv();
+  const { url, publishableKey } = getSupabaseEnv();
 
-  return createServerClient<Database>(url, anonKey, {
+  return createServerClient<Database>(url, publishableKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookies: {
         getAll: () => request.cookies.getAll(),
@@ -20,7 +20,10 @@ export async function middleware(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  const protectedPath = request.nextUrl.pathname.startsWith("/registry") || request.nextUrl.pathname.startsWith("/review") || request.nextUrl.pathname.startsWith("/map");
+  const protectedPath = request.nextUrl.pathname.startsWith("/admin")
+    || request.nextUrl.pathname.startsWith("/registry")
+    || request.nextUrl.pathname.startsWith("/review")
+    || request.nextUrl.pathname.startsWith("/map");
   if (protectedPath && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
@@ -33,4 +36,4 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: ["/registry/:path*", "/review/:path*", "/map/:path*", "/sign-in"] };
+export const config = { matcher: ["/admin/:path*", "/registry/:path*", "/review/:path*", "/map/:path*", "/sign-in"] };

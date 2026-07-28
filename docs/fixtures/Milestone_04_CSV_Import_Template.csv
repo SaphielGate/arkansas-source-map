@@ -1,0 +1,2 @@
+source_name,latitude,longitude,county,incident_type,observation_date,summary,city,source_url,confidence,external_id,address,notes
+Example Public Source,34.7465,-92.2896,Pulaski,example_observation,2026-07-01,Replace this example with a concise factual observation,Little Rock,https://example.org/source,medium,EXAMPLE-001,100 Example Street,Optional neutral notes

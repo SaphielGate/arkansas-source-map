@@ -12,13 +12,13 @@ export type MapRecord = {
   record_id: string;
   observation_id: string;
   business_name_as_listed: string;
-  address: string;
-  city: string;
+  address: string | null;
+  city: string | null;
   county: string;
-  zip_code: string;
+  zip_code: string | null;
   latitude: number;
   longitude: number;
-  source_url: string;
+  source_url: string | null;
   collection_date: string;
   first_seen: string;
   last_seen: string;
@@ -61,7 +61,7 @@ function markerIcon(record: MapRecord) {
 }
 
 function options(records: MapRecord[], key: "county" | "city" | "zip_code" | "record_status" | "human_review_status") {
-  return Array.from(new Set(records.map((record) => record[key]))).sort((a, b) => a.localeCompare(b));
+  return Array.from(new Set(records.map((record) => record[key]).filter((value): value is string => Boolean(value)))).sort((a, b) => a.localeCompare(b));
 }
 
 export default function MapView({ records, canReview, loadError }: { records: MapRecord[]; canReview: boolean; loadError?: string }) {
@@ -132,7 +132,7 @@ function RecordDetail({ record }: { record: MapRecord | null }) {
       <div><dt>Collection date</dt><dd>{record.collection_date}</dd></div><div><dt>First seen</dt><dd>{record.first_seen}</dd></div>
       <div><dt>Last seen</dt><dd>{record.last_seen}</dd></div><div><dt>Review count</dt><dd>{record.review_count}</dd></div>
       <div><dt>Record status</dt><dd>{record.record_status.replaceAll("_", " ")}</dd></div><div><dt>Human review status</dt><dd>{record.human_review_status.replaceAll("_", " ")}</dd></div>
-      <div className="wide"><dt>Source</dt><dd><a href={record.source_url} target="_blank" rel="noreferrer">Open public-source listing</a></dd></div>
+      <div className="wide"><dt>Source</dt><dd>{record.source_url ? <a href={record.source_url} target="_blank" rel="noreferrer">Open public-source listing</a> : "No source URL supplied."}</dd></div>
       <div className="wide"><dt>Neutral analyst notes</dt><dd>{record.analyst_notes || "No analyst notes recorded."}</dd></div>
     </dl>
   </section>;

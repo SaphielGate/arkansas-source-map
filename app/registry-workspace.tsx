@@ -112,9 +112,11 @@ export default function RegistryWorkspace({ mode }: { mode: "entry" | "review" }
             <article key={item.id}>
               <p className="record-id">{item.location_records?.record_id}</p>
               <h3>{item.business_name_as_listed}</h3>
-              <p>{item.address}, {item.city}, AR {item.zip_code} · {item.county} County</p>
+              <p>{[item.address, item.city, item.zip_code].filter(Boolean).join(", ") || "No street address supplied"} · {item.county} County</p>
               <p>Collected {item.source_collection_date} · {item.review_count} reviews · {item.listing_status.replaceAll("_", " ")}</p>
-              <a href={item.source_url} target="_blank" rel="noreferrer">View submitted source</a>
+              {item.source_url && <a href={item.source_url} target="_blank" rel="noreferrer">View submitted source</a>}
+              {item.incident_type && <p>Incident type: {item.incident_type}</p>}
+              {item.summary && <p>Summary: {item.summary}</p>}
               {item.analyst_notes && <p>Analyst notes: {item.analyst_notes}</p>}
               <div className="actions">
                 <button onClick={() => review(item.id, "approved")}>Approve</button>

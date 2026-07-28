@@ -3,6 +3,18 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      csv_import_batches: {
+        Row: { completed_at: string | null; created_at: string; duplicate_rows: number; error_summary: Json; file_sha256: string; id: string; imported_by: string; inserted_rows: number; metadata: Json; original_filename: string; rejected_rows: number; status: string; total_rows: number; valid_rows: number };
+        Insert: { completed_at?: string | null; created_at?: string; duplicate_rows?: number; error_summary?: Json; file_sha256: string; id?: string; imported_by: string; inserted_rows?: number; metadata?: Json; original_filename: string; rejected_rows?: number; status?: string; total_rows: number; valid_rows?: number };
+        Update: { completed_at?: string | null; duplicate_rows?: number; error_summary?: Json; inserted_rows?: number; metadata?: Json; rejected_rows?: number; status?: string; valid_rows?: number };
+        Relationships: [];
+      };
+      csv_import_rows: {
+        Row: { created_at: string; csv_row_number: number; dedup_key: string | null; duplicate_reason: string | null; id: string; import_batch_id: string; normalization_log: Json; normalized_payload: Json | null; observation_id: string | null; original_payload: Json; outcome: string; validation_errors: Json };
+        Insert: { created_at?: string; csv_row_number: number; dedup_key?: string | null; duplicate_reason?: string | null; id?: string; import_batch_id: string; normalization_log?: Json; normalized_payload?: Json | null; observation_id?: string | null; original_payload: Json; outcome: string; validation_errors?: Json };
+        Update: { observation_id?: string | null };
+        Relationships: [{ foreignKeyName: "csv_import_rows_import_batch_id_fkey"; columns: ["import_batch_id"]; isOneToOne: false; referencedRelation: "csv_import_batches"; referencedColumns: ["id"] }, { foreignKeyName: "csv_import_rows_observation_id_fkey"; columns: ["observation_id"]; isOneToOne: false; referencedRelation: "source_observations"; referencedColumns: ["id"] }];
+      };
       evidence_items: {
         Row: { created_at: string; id: string; captured_at: string | null; notes: string | null; storage_path: string; submitted_by: string; title: string };
         Insert: { captured_at?: string | null; notes?: string | null; storage_path: string; submitted_by: string; title: string };
@@ -28,9 +40,9 @@ export type Database = {
         Relationships: [];
       };
       source_observations: {
-        Row: { address: string; analyst_notes: string | null; business_name_as_listed: string; city: string; coordinate_confidence: string; county: string; human_review_status: string; id: string; latitude: number; listing_status: string; location_record_id: string; longitude: number; normalized_address: string; review_count: number; review_note: string | null; reviewed_at: string | null; reviewed_by: string | null; source_collection_date: string; source_url: string; submitted_at: string; submitted_by: string; zip_code: string };
-        Insert: { address: string; analyst_notes?: string | null; business_name_as_listed: string; city: string; coordinate_confidence?: string; county: string; latitude: number; listing_status: string; location_record_id: string; longitude: number; review_count: number; source_collection_date: string; source_url: string; submitted_by: string; zip_code: string };
-        Update: { human_review_status?: string; review_note?: string | null; reviewed_at?: string | null; reviewed_by?: string | null };
+        Row: { address: string | null; analyst_notes: string | null; business_name_as_listed: string; city: string | null; coordinate_confidence: string; county: string; external_id: string | null; human_review_status: string; id: string; import_batch_id: string | null; import_dedup_key: string | null; imported_at: string | null; incident_type: string | null; latitude: number; listing_status: string; location_record_id: string | null; longitude: number; normalization_log: Json | null; normalized_address: string | null; original_csv_row_number: number | null; original_payload: Json | null; review_count: number; review_note: string | null; reviewed_at: string | null; reviewed_by: string | null; source_collection_date: string; source_name: string | null; source_url: string | null; submitted_at: string; submitted_by: string; summary: string | null; zip_code: string | null };
+        Insert: { address?: string | null; analyst_notes?: string | null; business_name_as_listed: string; city?: string | null; coordinate_confidence?: string; county: string; external_id?: string | null; human_review_status?: string; id?: string; import_batch_id?: string | null; import_dedup_key?: string | null; imported_at?: string | null; incident_type?: string | null; latitude: number; listing_status: string; location_record_id?: string | null; longitude: number; normalization_log?: Json | null; original_csv_row_number?: number | null; original_payload?: Json | null; review_count: number; source_collection_date: string; source_name?: string | null; source_url?: string | null; submitted_by: string; summary?: string | null; zip_code?: string | null };
+        Update: { human_review_status?: string; location_record_id?: string | null; review_note?: string | null; reviewed_at?: string | null; reviewed_by?: string | null };
         Relationships: [{ foreignKeyName: "source_observations_location_record_id_fkey"; columns: ["location_record_id"]; isOneToOne: false; referencedRelation: "location_records"; referencedColumns: ["id"] }];
       };
       sources: {
@@ -50,7 +62,7 @@ export type Database = {
     Functions: {
       get_map_records: {
         Args: { p_include_pending?: boolean };
-        Returns: { address: string; analyst_notes: string | null; business_name_as_listed: string; city: string; collection_date: string; coordinate_confidence: string; county: string; first_seen: string; human_review_status: string; last_seen: string; latitude: number; location_record_id: string; longitude: number; observation_id: string; record_id: string; record_status: string; review_count: number; review_layer: boolean; source_url: string; zip_code: string }[];
+        Returns: { address: string | null; analyst_notes: string | null; business_name_as_listed: string; city: string | null; collection_date: string; coordinate_confidence: string; county: string; first_seen: string; human_review_status: string; last_seen: string; latitude: number; location_record_id: string; longitude: number; observation_id: string; record_id: string; record_status: string; review_count: number; review_layer: boolean; source_url: string | null; zip_code: string | null }[];
       };
       has_app_role: {
         Args: { p_roles: Database["public"]["Enums"]["app_role"][] };

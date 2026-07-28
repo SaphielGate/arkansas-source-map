@@ -10,8 +10,8 @@ export type MapFilters = {
 
 export type FilterableMapRecord = {
   county: string;
-  city: string;
-  zip_code: string;
+  city: string | null;
+  zip_code: string | null;
   record_status: string;
   human_review_status: string;
   first_seen: string;

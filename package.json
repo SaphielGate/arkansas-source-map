@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "node --test tests/*.test.mjs"
+    "test": "tsx --test tests/*.test.mjs tests/*.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.6.1",
@@ -16,6 +16,7 @@
     "leaflet": "^1.9.4",
     "leaflet.heat": "^0.2.0",
     "next": "14.2.35",
+    "papaparse": "5.5.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-leaflet": "^4.2.1",
@@ -26,11 +27,14 @@
     "@types/leaflet.heat": "^0.2.3",
     "@types/leaflet.markercluster": "^1.5.6",
     "@types/node": "20.17.30",
+    "@types/papaparse": "5.3.16",
     "@types/prop-types": "15.7.14",
     "@types/react": "18.3.20",
     "@types/react-dom": "18.3.6",
     "eslint": "8.57.1",
     "eslint-config-next": "14.2.31",
+    "supabase": "^2.110.0",
+    "tsx": "4.20.6",
     "typescript": "5.8.3"
   },
   "engines": {

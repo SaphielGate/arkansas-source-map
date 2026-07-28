@@ -8,14 +8,21 @@ const readProjectFile = (...parts) => readFileSync(resolve(process.cwd(), ...par
 test("the environment example contains only the required public Supabase settings", () => {
   const example = readProjectFile(".env.example");
   assert.match(example, /^NEXT_PUBLIC_SUPABASE_URL=/m);
-  assert.match(example, /^NEXT_PUBLIC_SUPABASE_ANON_KEY=/m);
+  assert.match(example, /^NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=/m);
   assert.doesNotMatch(example, /^NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY=/m);
+});
+
+test("local environment files and Supabase CLI metadata stay out of Git", () => {
+  const gitignore = readProjectFile(".gitignore");
+  assert.match(gitignore, /^\.env\.local$/m);
+  assert.match(gitignore, /^supabase\/\.temp\/$/m);
+  assert.doesNotMatch(gitignore, /^(<<<<<<<|=======|>>>>>>>)/m);
 });
 
 test("the browser environment loader uses statically analyzable public variables", () => {
   const loader = readProjectFile("lib", "supabase", "env.ts");
   assert.match(loader, /process\.env\.NEXT_PUBLIC_SUPABASE_URL/);
-  assert.match(loader, /process\.env\.NEXT_PUBLIC_SUPABASE_ANON_KEY/);
+  assert.match(loader, /process\.env\.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
   assert.doesNotMatch(loader, /process\.env\[[^\]]+\]/);
 });
 
