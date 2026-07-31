@@ -9,6 +9,7 @@ test("the environment example contains only the required public Supabase setting
   const example = readProjectFile(".env.example");
   assert.match(example, /^NEXT_PUBLIC_SUPABASE_URL=/m);
   assert.match(example, /^NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=/m);
+  assert.doesNotMatch(example, /^NEXT_PUBLIC_SUPABASE_ANON_KEY=/m);
   assert.doesNotMatch(example, /^NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY=/m);
 });
 
@@ -23,7 +24,16 @@ test("the browser environment loader uses statically analyzable public variables
   const loader = readProjectFile("lib", "supabase", "env.ts");
   assert.match(loader, /process\.env\.NEXT_PUBLIC_SUPABASE_URL/);
   assert.match(loader, /process\.env\.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
+  assert.doesNotMatch(loader, /NEXT_PUBLIC_SUPABASE_ANON_KEY/);
   assert.doesNotMatch(loader, /process\.env\[[^\]]+\]/);
+});
+
+test("deployment configuration uses the pinned Node 20 major and supported CSS alignment", () => {
+  const packageJson = JSON.parse(readProjectFile("package.json"));
+  const styles = readProjectFile("app", "styles.css");
+  assert.equal(packageJson.engines.node, "20.x");
+  assert.doesNotMatch(styles, /align-items:\s*start\b/);
+  assert.match(styles, /align-items:\s*flex-start\b/);
 });
 
 test("RLS is enabled for every core table", () => {
