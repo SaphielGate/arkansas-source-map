@@ -1,4 +1,5 @@
 import { signIn } from "./actions";
+import ForgotPasswordForm from "./forgot-password-form";
 
 export default function SignInPage({ searchParams }: { searchParams: { error?: string; next?: string } }) {
   return (
@@ -14,6 +15,7 @@ export default function SignInPage({ searchParams }: { searchParams: { error?: s
         <label>Password<input name="password" type="password" autoComplete="current-password" required /></label>
         <button type="submit">Sign in</button>
       </form>
+      <ForgotPasswordForm />
     </main>
   );
 }
